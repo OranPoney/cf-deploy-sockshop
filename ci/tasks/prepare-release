@@ -1,0 +1,15 @@
+#!/bin/sh
+
+set -e
+
+pwd
+ls -la
+
+echo $APP_NAME $(cat ./version/number) > ./prepared-release/name
+echo $(cat ./version/number) > ./prepared-release/tag
+
+echo "Name ="
+cat ./prepared-release/name
+echo "Version = "
+cat ./prepared-release/tag
+

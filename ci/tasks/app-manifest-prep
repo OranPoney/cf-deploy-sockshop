@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -xe
+ls -lrt 
+
+if [ "$STAGE" == "Production" ]; then
+   cat ./current-app-info/current-app.txt
+   sed "s/APPNAME/$PCF_APP_SUFFIX-$(cat ./current-app-info/next-app.txt)/" ./$APP_REPO/manifest.yml > ./app-manifest-output/manifest-tmp.yml
+   sed "s/NODEID/$PCF_APP_SUFFIX/" ./app-manifest-output/manifest-tmp.yml > ./app-manifest-output/manifest-tmp1.yml
+   sed "s/APPCOLOR/$(cat ./current-app-info/next-app.txt)/" ./app-manifest-output/manifest-tmp1.yml > ./app-manifest-output/manifest-tmp2.yml
+   sed "s/DTGRP/Production/" ./app-manifest-output/manifest-tmp2.yml > ./app-manifest-output/manifest.yml
+else
+    sed "s/APPNAME/$PCF_APP_SUFFIX/" ./$APP_REPO/manifest.yml > ./app-manifest-output/manifest-tmp.yml
+    sed "s/NODEID/$PCF_APP_SUFFIX/" ./app-manifest-output/manifest-tmp.yml > ./app-manifest-output/manifest-tmp1.yml
+    sed "s/DEPLOYMENT_COLOR=APPCOLOR//" ./app-manifest-output/manifest-tmp1.yml > ./app-manifest-output/manifest-tmp2.yml
+    
+    if [ "$STAGE" == "Staging" ]; then
+        sed "s/DTGRP/Staging/" ./app-manifest-output/manifest-tmp2.yml > ./app-manifest-output/manifest-tmp3.yml
+        sed "s/.apps/-stage.apps/" ./app-manifest-output/manifest-tmp3.yml > ./app-manifest-output/manifest.yml
+    else 
+        if [ "$STAGE" == "Dev" ]; then
+            sed "s/DTGRP/Dev/" ./app-manifest-output/manifest-tmp2.yml > ./app-manifest-output/manifest-tmp3.yml
+            sed "s/.apps/-dev.apps/" ./app-manifest-output/manifest-tmp3.yml > ./app-manifest-output/manifest.yml
+        else
+            echo "Parameter STAGE must be one of: [Dev, Staging, Production]"
+        fi
+    fi
+fi
+
+cat ./app-manifest-output/manifest.yml

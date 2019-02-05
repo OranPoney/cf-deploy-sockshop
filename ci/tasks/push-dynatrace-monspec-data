@@ -1,0 +1,16 @@
+#!/bin/sh
+
+set -e
+
+echo "Configuring Dynatrace CLI with API-Token and Tenant-Host and enabling debug to show Dynatrace API calls."
+python /dtcli/dtcli.py config apitoken $apitoken tenanthost $tenanthost
+
+#export NEXT_APP_COLOR=$(cat ./current-app-info/next-app.txt)
+#export monspecserviceenvironment=SampleJSonService/Production-Green
+
+eval monspecserviceenvironment=$monspecserviceenvironment
+echo "Pushing Dynatrace monspec data for $monspecserviceenvironment after waiting 120s for data to hit Dynatrace"
+sleep 120
+
+#echo "Current seconds since epoch is $(date -u +%s)"
+python /dtcli/dtcli.py monspec push ./$APP_REPO/ci/smplmonspec.json ./$APP_REPO/ci/smplpipelineinfo.json $monspecserviceenvironment 6 1

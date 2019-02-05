@@ -1,0 +1,32 @@
+#!/bin/bash
+
+set -xe
+
+pwd
+env
+
+cf api $PCF_API --skip-ssl-validation
+cf login -u $PCF_USER -p $PCF_PWD -o "$PCF_ORG" -s "$PCF_SPACE"
+cf apps
+cf routes
+
+export PCF_DOMAIN_NAME=$PCF_APP_DOMAIN
+export MAIN_ROUTE_HOSTNAME=main-$PCF_APP_SUFFIX
+
+export NEXT_APP_COLOR=$(cat ./current-app-info/next-app.txt)
+export NEXT_APP_HOSTNAME=$PCF_APP_SUFFIX-$NEXT_APP_COLOR
+
+export CURRENT_APP_COLOR=$(cat ./current-app-info/current-app.txt)
+export CURRENT_APP_HOSTNAME=$PCF_APP_SUFFIX-$CURRENT_APP_COLOR
+
+cf routes
+
+echo "Removing previous main app route that pointed to $CURRENT_APP_HOSTNAME instance."
+
+set +e
+cf unmap-route $CURRENT_APP_HOSTNAME $PCF_DOMAIN_NAME --hostname $MAIN_ROUTE_HOSTNAME
+set -e
+
+echo "Routes updated"
+
+cf routes

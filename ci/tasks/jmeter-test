@@ -1,0 +1,34 @@
+#!/bin/bash
+
+set -ex
+
+# Set LOAD_URL to the proper color in production, run directly against url in staging
+if [ "$PRODUCTION" == "true" ]; then
+    echo "Setting PRODUCTION url"
+    export NEXT_APP_COLOR=$(cat ./current-app-info/next-app.txt)
+    export LOAD_URL=$NEXT_APP_COLOR-$PCF_APP_SUFFIX.$PCF_APP_DOMAIN/
+else
+    echo "Setting DEV or STAGING url"
+    export LOAD_URL=$PCF_APP_SUFFIX.$PCF_APP_DOMAIN/
+fi
+
+# Lets run the test and put the console output to output.txt
+echo "Running jmeter health tests against $LOAD_URL..."
+jmeter -n -t ./$APP_REPO/$SCRIPT_NAME -e -o $RESULT_DIR -l result.tlf -JSERVER_URL=$LOAD_URL -JDT_LTN=$DT_LTN -JVUCount=$VU_COUNT -JLoopCount=$LOOP_COUNT -JCHECK_PATH=$CHECK_PATH -JSERVER_PORT=$SERVER_PORT -JThinkTime=$THINK_TIME > output.txt
+cat output.txt
+
+# Lets do the functional validation if FUNC_VALIDATION=='true'
+export ERROR_COUNT=$(awk '/summary =/ {print $15;}' output.txt)
+if [ "$FUNC_VALIDATION" == "true" ] && [ $ERROR_COUNT -gt 0 ]
+then
+    echo "More than 1 functional error"
+    exit 1
+fi
+
+# Lets do the performance validation if AVG_RT_VALIDATION > 0
+export AVG_RT=$(awk '/summary =/ {print $9;}' output.txt)
+if [ $AVG_RT_VALIDATION -gt 0 ] && [ $AVG_RT -gt $AVG_RT_VALIDATION ]
+then
+    echo "Response Time Threshold Violation: $AVG_RT > $AVG_RT_VALIDATION"
+    exit 1
+fi

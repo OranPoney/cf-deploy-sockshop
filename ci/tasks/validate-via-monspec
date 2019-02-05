@@ -1,0 +1,28 @@
+#!/bin/sh
+
+set -e
+
+echo "configuring Dynatrace CLI with API-Token and Tenant-Host."
+python /dtcli/dtcli.py config apitoken $apitoken tenanthost $tenanthost
+
+export NEXT_APP_COLOR=$(cat ./current-app-info/next-app.txt)
+export CURRENT_APP_COLOR=$(cat ./current-app-info/current-app.txt)
+
+eval monspeccomparison=$monspeccomparison
+
+echo "Validating load test results via monspec comparison $monspeccomparison"
+#echo "Current seconds since epoch is $(date -u +%s)"
+
+# fetching monspec comparison results, printing them, and then failing if totalViolations > 0 via POSIX compliant logic for portability
+python /dtcli/dtcli.py monspec pullcompare ./$APP_REPO/ci/smplmonspec.json ./$APP_REPO/ci/smplpipelineinfo.json $monspeccomparison 10 > monspecpullcompare.json
+jq '.' monspecpullcompare.json
+totalViolations="$(jq -r '.totalViolations' monspecpullcompare.json)"
+
+if [ $totalViolations -gt 0 ]; then
+    echo "We encountered $totalViolations monspec violations, failing build."
+    exit 1
+else 
+    echo "No monspec violations encountered."
+    exit 0
+fi
+

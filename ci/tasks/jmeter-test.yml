@@ -1,0 +1,32 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: 
+    repository: dynatracesockshop/jmeter-test
+    tag: "latest"
+
+inputs:
+- name: git-pipeline
+- name: current-app-info
+  optional: true
+- name: git-user
+  optional: true
+- name: git-orders
+  optional: true
+- name: git-carts
+  optional: true
+- name: git-queue-master
+  optional: true
+- name: git-shipping
+  optional: true
+- name: git-payment
+  optional: true
+- name: git-catalogue
+  optional: true
+- name: git-front-end
+  optional: true
+
+run:
+  path: ./git-pipeline/ci/tasks/jmeter-test

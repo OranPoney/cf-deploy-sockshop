@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+echo "Configuring Dynatrace CLI with API-Token and Tenant-Host."
+python /dtcli/dtcli.py config apitoken $apitoken tenanthost $tenanthost
+
+echo "Initializing Dynatrace Custom Device to store timeseries performance data."
+python /dtcli/dtcli.py monspec init ./$APP_REPO/ci/smplmonspec.json ./$APP_REPO/ci/smplpipelineinfo.json

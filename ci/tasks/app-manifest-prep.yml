@@ -1,0 +1,35 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pivotalservices/docker-concourse-cf-tools
+    tag: "latest"
+
+inputs:
+- name: git-pipeline
+- name: git-user
+  optional: true
+- name: git-orders
+  optional: true
+- name: git-carts
+  optional: true
+- name: git-queue-master
+  optional: true
+- name: git-shipping
+  optional: true
+- name: git-payment
+  optional: true
+- name: git-catalogue
+  optional: true
+- name: git-front-end
+  optional: true
+- name: current-app-info
+  optional: true
+
+outputs:
+- name: app-manifest-output
+
+run:
+  path: ./git-pipeline/ci/tasks/app-manifest-prep

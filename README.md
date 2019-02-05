@@ -5,6 +5,6 @@ The pipeline of each microservice is in its code repository, e.g., https://githu
 
 To set up an Concourse pipeline for one microservice use the fly cli:
     
-    ```console
-    $ fly -t pipes set-pipeline -c '~\dynatrace-sockshop\carts\ci\pipeline.yml' -p carts -l '~\credentials.yml'
-    ```
+```console
+$ fly -t pipes set-pipeline -c '~\dynatrace-sockshop\carts\ci\pipeline.yml' -p carts -l '~\credentials.yml'
+```

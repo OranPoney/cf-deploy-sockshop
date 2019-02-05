@@ -30,7 +30,7 @@ For the credentials file you need:
     $ ./forkGitHubRepositories.sh <GitHubOrg>
     ```
 
-#### Step 3. Create pipeline for microservices
+#### Step 3. Create pipelines for all microservices
 
 1. To set up the Concourse pipelines for all microservices use `fly` and run following commands:
 ```console

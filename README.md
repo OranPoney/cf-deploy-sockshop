@@ -33,16 +33,16 @@ For the credentials file you need:
 #### Step 3. Create pipelines for all microservices
 
 1. To set up the Concourse pipelines for all microservices use `fly` and run following commands:
-```console
-$ fly --target pipes login --concourse-url http://127.0.0.1:8080 -u admin -p *******
+    ```console
+    $ fly --target pipes login --concourse-url http://127.0.0.1:8080 -u admin -p *******
 
-$ fly -t pipes set-pipeline -c '~/repositories/carts/ci/pipeline.yml' -p carts -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/orders/ci/pipeline.yml' -p orders -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/shipping/ci/pipeline.yml' -p shipping -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/queue-master/ci/pipeline.yml' -p queue-master -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/user/ci/pipeline.yml' -p user -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/catalogue/ci/pipeline.yml' -p catalogue -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/payment/ci/pipeline.yml' -p payment -l '~/credentials.yml'
-$ fly -t pipes set-pipeline -c '~/repositories/front-end/ci/pipeline.yml' -p front-end -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/carts/ci/pipeline.yml' -p carts -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/orders/ci/pipeline.yml' -p orders -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/shipping/ci/pipeline.yml' -p shipping -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/queue-master/ci/pipeline.yml' -p queue-master -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/user/ci/pipeline.yml' -p user -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/catalogue/ci/pipeline.yml' -p catalogue -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/payment/ci/pipeline.yml' -p payment -l '~/credentials.yml'
+    $ fly -t pipes set-pipeline -c '~/repositories/front-end/ci/pipeline.yml' -p front-end -l '~/credentials.yml'
 
-```
+    ```
